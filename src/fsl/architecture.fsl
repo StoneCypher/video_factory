@@ -1,0 +1,61 @@
+machine_name: "Video factory";
+
+flow: down;
+
+"Video factory" 
+  => "Series manager"
+  => "Language manager"
+  => "Episode manager"
+    ~> "Episode dataset"
+    ~> "Episode factory"
+    => "Episode driver"
+      => ["Frame generator" "Audio generator"]
+      ~> "Episode factory";
+
+  ["Language manager" "Series manager"]
+    ~> "Episode dataset";
+
+  "Episode manager"
+    => ["Episode factory" "Episode local storage" "Episode uploader"];
+    
+  "Episode factory" 
+    => "ffmpeg" 
+    ~> "Episode local storage" 
+    ~> "Episode uploader";
+
+  "Series manager"
+    => "Channel manager";
+    
+  ["Channel manager" "Language manager"] => "Channel language\nvariant manager";
+
+  "Channel language\nvariant manager" => "VOD multiplexed\nChannel language\nvariant manager";
+  "Episode uploader" => "VOD platform\nmultiplexer" ~> "VOD multiplexed\nChannel language\nvariant manager";
+
+
+"Frame generator" <=> FrameGeneratorTypesRecordMacro;
+
+// "Audio generator" <=> ["Text to speech" "Stock music" "Sound effects"];
+"Audio generator" <=> AudioGeneratorTypesRecordMacro;
+
+
+
+
+state FrameGeneratorTypesRecordMacro: {
+  shape: record;
+  label: "{Text effects|AI video|CG|Pre-made|Stock video}";
+};
+
+state AudioGeneratorTypesRecordMacro: {
+  shape: record;
+  label: "{Text to speech|Stock music|Sound effects|Pre-recorded}";
+};
+
+state "Video factory": {
+  text-color       : black;
+  background-color : #bcf;
+};
+
+state "VOD multiplexed\nChannel language\nvariant manager": {
+  text-color       : black;
+  background-color : #bfb;
+};
